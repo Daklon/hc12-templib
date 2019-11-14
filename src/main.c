@@ -10,8 +10,18 @@ bool set_preescale(uint8_t preescale){
 }
 
 uint32_t geticks(){
-    return M6812_CPU_E_CLOCK;
+    //devolvemos el número de ticks
+    return _IO_PORTS_W(M6812_TCNT);
 }
+
+uint32_t getmicros(){
+    //leemos la frecuencia de reloj
+    // con resolución de microsegundos
+    uint32_t frec = M6812_CPU_E_CLOCK/(1 << 0x4); /* Frecuencia del temporizador*/
+    uint16_t tcnt = _IO_PORTS_W(M6812_TCNT); // valor del temporizador
+    
+    return frec / tcnt;
+} 
 
 int main(){
     //ejemplo
