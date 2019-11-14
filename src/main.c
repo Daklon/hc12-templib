@@ -1,11 +1,13 @@
 #include <types.h>
+#include <sys/sio.h>
+#include <sys/param.h>
 
-bool set_preescale(uint8_t preescale){
+uint8_t set_preescale(uint8_t preescale){
     if (preescale > 0 && preescale <= 7 ){
         _io_ports[M6812_TMSK2] = preescale - 1;
-        return true;
+        return TRUE;
     }else{
-        return false;
+        return FALSE;
     }
 }
 
