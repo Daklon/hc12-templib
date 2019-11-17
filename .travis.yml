@@ -6,5 +6,5 @@ before_install:
 
 
 script:
-        make -C lib/
-        make -C src/
+  - make -C lib/
+  - make -C src/
