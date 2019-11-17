@@ -1,0 +1,10 @@
+language: c
+sudo: false # only for faster builds
+
+before_install:
+  - sudo apt-get -y install gcc-m68hc1x binutils-m68hc1x
+
+
+script:
+  - make -C lib/
+  - make -C src/
