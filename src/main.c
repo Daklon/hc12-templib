@@ -2,6 +2,16 @@
 #include <sys/sio.h>
 #include <sys/param.h>
 
+//declaramos variable global, un contador para aumentar el tiempo que puede contar el timer
+uint16_t expanded_timer = 0
+
+//función a la que se llama con una interrupción
+//cada vez que se desborda el timer
+//En caso de overflow de expanded_timer, se vuelve a 0
+void __attribute__((interrupt)) vi_tov(void){
+    expanded_timer++;
+}
+
 uint8_t set_preescale(uint8_t preescale){
     if (preescale > 0 && preescale <= 7 ){
         _io_ports[M6812_TMSK2] = preescale - 1;
@@ -11,9 +21,14 @@ uint8_t set_preescale(uint8_t preescale){
     }
 }
 
+//concatenamos expanded_timer con el TCNT y lo devolvemos
 uint32_t geticks(){
-    //devolvemos el número de ticks
-    return _IO_PORTS_W(M6812_TCNT);
+    uint32_t pow = 10;
+    uint16_t ticks = _IO_PORTS_W(M6812_TCNT);
+    while(ticks >= pow){
+        pow *= 10;
+    }
+    return expanded_timer * pow + ticks;
 }
 
 uint32_t getmicros(){
