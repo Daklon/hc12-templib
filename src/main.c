@@ -50,6 +50,27 @@ uint32_t getmicros(){
     return frec / tcnt;
 } 
 
+//Devuelve el tiempo desde que se encendió el microcontrolador en
+//milisegundos TODO
+uint32_t getmilis(){
+    return 0;
+}
+
+//Función que espera x milisegundos TODO
+void delayms(uint32_t time){
+    return 0;
+}
+
+//Ejecuta la función dentro de x milisegundos TODO
+void future_f(void (*f), uint32_t time){
+    return 0;
+}
+
+//Ejecuta la función cada x milisegundos, de forma periódica TODO
+void periodic_f(void (*f), uint32_t time){
+    return 0;
+}
+
 int main(){
     //ejemplo
     //inicializamos el serial
@@ -59,4 +80,6 @@ int main(){
     serial_printdecbyte(set_preescale(1));
     serial_printdeclong(geticks());
     serial_printdeclong(getmicros());
+    serial_printdeclong(getmilis());
+    delayms();
 }
