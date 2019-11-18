@@ -3,7 +3,7 @@
 #include <sys/param.h>
 
 //declaramos variable global, un contador para aumentar el tiempo que puede contar el timer
-uint16_t expanded_timer = 0
+uint16_t expanded_timer = 0;
 
 //función a la que se llama con una interrupción
 //cada vez que se desborda el timer
