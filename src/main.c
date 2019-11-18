@@ -58,17 +58,14 @@ uint32_t getmilis(){
 
 //Función que espera x milisegundos TODO
 void delayms(uint32_t time){
-    return 0;
 }
 
 //Ejecuta la función dentro de x milisegundos TODO
 void future_f(void (*f), uint32_t time){
-    return 0;
 }
 
 //Ejecuta la función cada x milisegundos, de forma periódica TODO
 void periodic_f(void (*f), uint32_t time){
-    return 0;
 }
 
 int main(){
@@ -81,5 +78,5 @@ int main(){
     serial_printdeclong(geticks());
     serial_printdeclong(getmicros());
     serial_printdeclong(getmilis());
-    delayms();
+    delayms(1);
 }
