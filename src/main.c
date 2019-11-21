@@ -2,6 +2,7 @@
 #include <sys/interrupts.h>
 #include <sys/sio.h>
 #include <sys/param.h>
+#include <sys/locks.h>
 
 //declaramos variable global, un contador para aumentar el tiempo que puede contar el timer
 uint16_t expanded_timer = 0;
@@ -11,14 +12,15 @@ uint8_t preescale = 0;
 //cada vez que se desborda el timer
 //En caso de overflow de expanded_timer, se vuelve a 0
 void __attribute__((interrupt)) vi_tov(void){
-    expanded_timer++;
+    expanded_timer++; //incrementamos expanded timer
+    _io_ports[M6812_TFLG2] = M6812B_TOF;//bajamos el flag que disparó la interrupción
 }
 
 //Establece el preescaler
 uint8_t set_preescale(uint8_t preescale_r){
     if (preescale_r > 0 && preescale_r <= 7 ){
-        _io_ports[M6812_TMSK2] = preescale_r - 1;
-	preescale = preescale_r -1;
+        _io_ports[M6812_TMSK2] |= preescale_r;
+	preescale = preescale_r;
         return TRUE;
     }else{
         return FALSE;
@@ -74,11 +76,16 @@ void periodic_f(void (*f), uint32_t time){
 }
 
 int main(){
-    //ejemplo
-	// habilitamos el timer
-	_io_ports[M6812_TSCR] |= M6812B_TEN;
+    //desabilitamos interrupciones
+    lock();
     //inicializamos el serial
     serial_init();
+	// habilitamos el timer
+	_io_ports[M6812_TSCR] |= M6812B_TEN;
+	//habilitamos interrupción de desbordamiento del timer
+	_io_ports[M6812_TMSK2] |= M6812B_TOI;
+	//habilitamos las interrupciones
+	unlock();
     serial_print("\nEjemplo de librería de temporización");
     //inicializamos preescaler
 	serial_print("\npreescale: ");
