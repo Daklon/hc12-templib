@@ -59,6 +59,10 @@ uint32_t getmilis(){
 
 //Función que espera x milisegundos TODO
 void delayms(uint32_t time){
+	uint32_t wait_start;
+	do {
+		wait_start = getmilis();
+	} while (wait_start != time);
 }
 
 //Ejecuta la función dentro de x milisegundos TODO
