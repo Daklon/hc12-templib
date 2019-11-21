@@ -1,4 +1,5 @@
 #include <types.h>
+#include <sys/interrupts.h>
 #include <sys/sio.h>
 #include <sys/param.h>
 
@@ -70,13 +71,21 @@ void periodic_f(void (*f), uint32_t time){
 
 int main(){
     //ejemplo
+	// habilitamos el timer
+	_io_ports[M6812_TSCR] |= M6812B_TEN;
     //inicializamos el serial
     serial_init();
-    serial_print("\nEJemplo de librería de temporización");
+    serial_print("\nEjemplo de librería de temporización");
     //inicializamos preescaler
+	serial_print("\npreescale: ");
     serial_printdecbyte(set_preescale(1));
+	serial_print("\ngeticks: ");
     serial_printdeclong(geticks());
+	serial_print("\ngetmicros: ");
     serial_printdeclong(getmicros());
+	serial_print("\ngetmilis: ");
     serial_printdeclong(getmilis());
+	serial_print("\ndelay: ");
     delayms(1);
+	serial_print("\ndelay: ");
 }
