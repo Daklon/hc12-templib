@@ -54,7 +54,7 @@ uint32_t getmicros(){
 //Devuelve el tiempo desde que se encendió el microcontrolador en
 //milisegundos TODO
 uint32_t getmilis(){
-    return getmicros()/10000;
+    return getmicros()/1000;
 }
 
 //Función que espera x milisegundos TODO
@@ -62,7 +62,7 @@ void delayms(uint32_t time){
 	uint32_t wait_start;
 	do {
 		wait_start = getmilis();
-	} while (wait_start != time);
+	} while (wait_start <= time);
 }
 
 //Ejecuta la función dentro de x milisegundos TODO
