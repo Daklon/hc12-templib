@@ -48,7 +48,7 @@ uint32_t getmicros(){
     uint32_t frec = M6812_CPU_E_CLOCK/(1 << 0x4);
     uint16_t tcnt = _IO_PORTS_W(M6812_TCNT); // valor del temporizador
 
-    return (frec/100) / tcnt;
+    return (geticks()/100);
 } 
 
 //Devuelve el tiempo desde que se encendió el microcontrolador en
