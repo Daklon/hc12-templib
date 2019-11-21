@@ -47,19 +47,19 @@ uint32_t geticks(){
 uint32_t getmicros(){
     //leemos la frecuencia de reloj
     //con resolución de microsegundos
-    uint32_t frec = M6812_CPU_E_CLOCK/(1 << 0x4);
+    uint32_t frec = M6812_CPU_E_CLOCK/(1 << 0x4);//TODO: cambiar aquí el 4 por el valor del preescaler
     uint16_t tcnt = _IO_PORTS_W(M6812_TCNT); // valor del temporizador
 
-    return (geticks()/100);
+    return (geticks());//TODO dividir esto por la frecuencia para obtener siempre microsegundos
 } 
 
 //Devuelve el tiempo desde que se encendió el microcontrolador en
-//milisegundos TODO
+//milisegundos
 uint32_t getmilis(){
     return getmicros()/1000;
 }
 
-//Función que espera x milisegundos TODO
+//Función que espera x milisegundos
 void delayms(uint32_t time){
 	uint32_t wait_start;
 	do {
@@ -69,23 +69,30 @@ void delayms(uint32_t time){
 
 //Ejecuta la función dentro de x milisegundos TODO
 void future_f(void (*f), uint32_t time){
+    
 }
 
 //Ejecuta la función cada x milisegundos, de forma periódica TODO
 void periodic_f(void (*f), uint32_t time){
 }
 
-int main(){
+//inicializa la librería
+void initialize(){
     //desabilitamos interrupciones
     lock();
-    //inicializamos el serial
-    serial_init();
 	// habilitamos el timer
 	_io_ports[M6812_TSCR] |= M6812B_TEN;
 	//habilitamos interrupción de desbordamiento del timer
 	_io_ports[M6812_TMSK2] |= M6812B_TOI;
 	//habilitamos las interrupciones
 	unlock();
+}
+
+int main(){
+    //inicializamos
+    initialize();
+    //inicializamos el serial
+    serial_init();
     serial_print("\nEjemplo de librería de temporización");
     //inicializamos preescaler
 	serial_print("\npreescale: ");
