@@ -89,7 +89,7 @@ int main(){
     serial_print("\nEjemplo de librería de temporización");
     //inicializamos preescaler
 	serial_print("\npreescale: ");
-    serial_printdecbyte(set_preescale(1));
+    serial_printdecbyte(set_preescale(4));
 	serial_print("\ngeticks: ");
     serial_printdeclong(geticks());
 	serial_print("\ngetmicros: ");
@@ -97,6 +97,6 @@ int main(){
 	serial_print("\ngetmilis: ");
     serial_printdeclong(getmilis());
 	serial_print("\ndelay: ");
-    delayms(1);
+    delayms(1000);
 	serial_print("\ndelay: ");
 }
