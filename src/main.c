@@ -139,6 +139,6 @@ int main(){
 	serial_print("\ndelay: ");
     delayms(1000);
 	serial_print("\ndelay: ");
-    future_f(&dummyfunction(),1000);
+    future_f(&dummyfunction,1000);
     serial_print("FIN");
 }
