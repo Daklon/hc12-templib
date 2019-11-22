@@ -20,7 +20,7 @@ void __attribute__((interrupt)) vi_tov(void){
 }
 
 /** Calls function after an interruption if the countdown timer equals zero */
-void __attribute__((interrupt)) vi_ioc0(void){
+void __attribute__((interrupt)) vi_ioc1(void){
     _io_ports[M6812_TFLG1] = M6812B_C1F; //bajamos el flag que disparó la interrupción
     //compruebo si es la última iteración
     if (expanded_programmed_timer == 0){
@@ -137,6 +137,6 @@ int main(){
 	serial_print("\ndelay: ");
     delayms(1000);
 	serial_print("\ndelay: ");
-    future_f(&dummyfunction,1000);
+    future_f(&dummyfunction,9911000);
     serial_print("FIN");
 }
