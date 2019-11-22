@@ -4,24 +4,22 @@
 #include <sys/param.h>
 #include <sys/locks.h>
 
-//declaramos variable global, un contador para aumentar el tiempo que puede contar el timer
+/** Global vars declaration */
 uint16_t expanded_timer = 0;
 uint16_t expanded_programmed_timer = 0;
 uint16_t iteration_triger = 0;
 uint8_t preescale = 0;
 
+/** Pointer to function */
 void (*future_function)(void);
 
-//función a la que se llama con una interrupción
-//cada vez que se desborda el timer
-//En caso de overflow de expanded_timer, se vuelve a 0
+/**	Increments expanded timer every time the microcontroller timer overflows */
 void __attribute__((interrupt)) vi_tov(void){
     expanded_timer++; //incrementamos expanded timer
     _io_ports[M6812_TFLG2] = M6812B_TOF;//bajamos el flag que disparó la interrupción
 }
 
-//función a la que se llama con una interrupción
-//cuando el timer alcanza el valor programado
+/** Calls function after an interruption if the countdown timer equals zero */
 void __attribute__((interrupt)) vi_ioc0(void){
     _io_ports[M6812_TFLG1] = M6812B_C1F; //bajamos el flag que disparó la interrupción
     //compruebo si es la última iteración
@@ -35,7 +33,7 @@ void __attribute__((interrupt)) vi_ioc0(void){
     }
 }
 
-//Establece el preescaler
+/** Sets the preescaler to a microcontroller defined configuration */
 uint8_t set_preescale(uint8_t preescale_r){
     if (preescale_r > 0 && preescale_r <= 7 ){
         _io_ports[M6812_TMSK2] |= preescale_r;
@@ -46,7 +44,7 @@ uint8_t set_preescale(uint8_t preescale_r){
     }
 }
 
-//Función que concatena dos uint16_t
+/** Concats two numbers in a string-like fashion */
 uint32_t concat(uint16_t x, uint16_t y){
     uint32_t pow = 10;
     while (y >= pow) {
@@ -55,14 +53,14 @@ uint32_t concat(uint16_t x, uint16_t y){
     return x * pow + y;
 }
 
-//Concatenamos expanded_timer con el TCNT y lo devolvemos
+/** Calculates and returns the concatenation of the expanded timer 
+ * with the microcontroller timer register */
 uint32_t geticks(){
     uint16_t ticks = _IO_PORTS_W(M6812_TCNT);
     return concat(expanded_timer,ticks);
 }
 
-//Devuelve el tiempo desde que se encendió el microcontrolador en
-//microsegundos
+/** Returns ticks conversion in microseconds */
 uint32_t getmicros(){
     //leemos la frecuencia de reloj
     //con resolución de microsegundos
@@ -72,13 +70,12 @@ uint32_t getmicros(){
     return (geticks());//TODO dividir esto por la frecuencia para obtener siempre microsegundos
 } 
 
-//Devuelve el tiempo desde que se encendió el microcontrolador en
-//milisegundos
+/** Returns ticks convertion in milliseconds */
 uint32_t getmilis(){
     return getmicros()/1000;
 }
 
-//Función que espera x milisegundos
+/** Generates a time-based delay */
 void delayms(uint32_t time){
 	uint32_t wait_start;
 	do {
@@ -86,7 +83,7 @@ void delayms(uint32_t time){
 	} while (wait_start <= time);
 }
 
-//Ejecuta la función dentro de x microsegundos TODO
+/** Waits for a time-based delay, then calls a function */
 void future_f(void (*f)(void), uint32_t time){
     expanded_programmed_timer = time >> 16;
     future_function = f;
@@ -100,12 +97,12 @@ void future_f(void (*f)(void), uint32_t time){
 	_io_ports[M6812_TMSK1] |= M6812B_C1I;
 }
 
-
-//Ejecuta la función cada x milisegundos, de forma periódica TODO
+/** Calls a function periodically */
 void periodic_f(void (*f), uint32_t time){
+	// TODO
 }
 
-//inicializa la librería
+/** SimpleGEL library initialization */
 void initialize(){
     //desabilitamos interrupciones
     lock();
@@ -117,6 +114,7 @@ void initialize(){
 	unlock();
 }
 
+/** Serves as test for the futures */
 void dummyfunction(){
     serial_print("FuncionaAA!");
 }
