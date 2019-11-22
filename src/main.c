@@ -10,7 +10,7 @@ uint16_t expanded_programmed_timer = 0;
 uint16_t iteration_triger = 0;
 uint8_t preescale = 0;
 
-void *future_function;
+void (*future_function)(void);
 
 //función a la que se llama con una interrupción
 //cada vez que se desborda el timer
@@ -87,7 +87,7 @@ void delayms(uint32_t time){
 }
 
 //Ejecuta la función dentro de x microsegundos TODO
-void future_f(void (*f), uint32_t time){
+void future_f(void (*f)(void), uint32_t time){
     expanded_programmed_timer = time >> 16;
     future_function = f;
     //Establecemos el modo de comparador a salida(OC)
