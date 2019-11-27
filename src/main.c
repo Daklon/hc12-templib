@@ -103,7 +103,7 @@ void periodic_f(void (*f), uint32_t time){
         //desactivamos interrupción
         _io_ports[M6812_TMSK1] &= ~M6812B_C1I;
         periodic_timer = 0;
-    else{
+    }else{
         //configuramos la llamada en el futuro
         periodic_timer = time;
         future_f(f,time);
