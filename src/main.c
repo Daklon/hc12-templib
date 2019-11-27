@@ -9,6 +9,7 @@ uint16_t expanded_timer = 0;
 uint16_t expanded_programmed_timer = 0;
 uint16_t iteration_triger = 0;
 uint8_t preescale = 0;
+uint32_t periodic_timer = 0;
 
 /** Pointer to function */
 void (*future_function)(void);
@@ -28,6 +29,10 @@ void __attribute__((interrupt)) vi_ioc1(void){
         _io_ports[M6812_TMSK1] &= ~M6812B_C1I;
         //ejecutamos función
         future_function();
+        //si la funcion se debe ejecutar de forma periodica, volvemos a configurarla
+        if (periodic_timer > 0){
+            future_f(&future_function,periodic_timer);
+        }
     } else{//se ha disparado porque se tiene que ejecutar la func
         expanded_programmed_timer--;
     }
@@ -75,7 +80,7 @@ uint32_t getmilis(){
     return getmicros()/1000;
 }
 
-/** Generates a time-based delay */
+/** Generates a time-based delay, time must be milliseconds*/
 void delayms(uint32_t time){
 	uint32_t wait_start;
 	do {
@@ -83,7 +88,7 @@ void delayms(uint32_t time){
 	} while (wait_start <= time);
 }
 
-/** Waits for a time-based delay, then calls a function */
+/** Waits for a time-based delay, then calls a function , time must be in milliseconds*/
 void future_f(void (*f)(void), uint32_t time){
     expanded_programmed_timer = time >> 16;
     future_function = f;
@@ -99,10 +104,18 @@ void future_f(void (*f)(void), uint32_t time){
 
 /** Calls a function periodically */
 void periodic_f(void (*f), uint32_t time){
-	// TODO
+    if (f == NULL || time == 0){
+        //desactivamos interrupción
+        _io_ports[M6812_TMSK1] &= ~M6812B_C1I;
+        periodic_timer = 0;
+    else{
+        //configuramos la llamada en el futuro
+        periodic_timer = time;
+        future_f(f,time);
+    }
 }
 
-/** SimpleGEL library initialization */
+/** Timer library initialization */
 void initialize(){
     //desabilitamos interrupciones
     lock();
