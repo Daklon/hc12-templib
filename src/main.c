@@ -67,11 +67,6 @@ uint32_t geticks(){
 
 /** Returns ticks conversion in microseconds */
 uint32_t getmicros(){
-    //leemos la frecuencia de reloj
-    //con resolución de microsegundos
-    uint32_t frec = M6812_CPU_E_CLOCK/(1 << 0x4);//TODO: cambiar aquí el 4 por el valor del preescaler
-    uint16_t tcnt = _IO_PORTS_W(M6812_TCNT); // valor del temporizador
-
     return (geticks());//TODO dividir esto por la frecuencia para obtener siempre microsegundos
 } 
 
@@ -102,9 +97,9 @@ void future_f(void (*f)(void), uint32_t time){
 	_io_ports[M6812_TMSK1] |= M6812B_C1I;
 }
 
-/** Calls a function periodically */
+/** Calls a function periodically, to stop it call it again with 0 as time parameter */
 void periodic_f(void (*f), uint32_t time){
-    if (f == NULL || time == 0){
+    if (time == 0){
         //desactivamos interrupción
         _io_ports[M6812_TMSK1] &= ~M6812B_C1I;
         periodic_timer = 0;
