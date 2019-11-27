@@ -29,7 +29,7 @@ SRCDIR=.
 
 BASEDIR=$(SRCDIR)/..
 
-fuentes:=$(wildcard *.c)
+fuentes:=$(wildcard *.c,*.h)
 
 s19s:=$(fuentes:.c=.s19)
 
